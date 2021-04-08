@@ -1,0 +1,51 @@
+{
+  "name": "@mvieracanive/nest_doc_manager",
+  "version": "1.0.0",
+  "description": "A module for Nest.js for managing documents under the principle of file-system information of archive and its medatadata.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "keywords": [
+    "nest.js",
+    "node.js",
+    "module",
+    "document",
+    "manager",
+    "metadata"
+  ],
+  "author": "Maia Viera Cañive",
+  "license": "MIT",
+  "devDependencies": {
+    "@nestjs/common": "^7.6.15",
+    "@nestjs/config": "^0.6.3",
+    "@nestjs/platform-express": "^7.6.15",
+    "@nestjs/swagger": "^4.8.0",
+    "@nestjs/typeorm": "^7.1.5",
+    "@types/node": "^14.14.37",
+    "@typescript-eslint/eslint-plugin": "^4.20.0",
+    "@typescript-eslint/parser": "^4.20.0",
+    "class-transformer": "^0.3.1",
+    "eslint": "^7.23.0",
+    "pg": "^8.5.1",
+    "prettier": "^2.2.1",
+    "typeorm": "^0.2.32",
+    "typescript": "^4.2.3"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "main": "dist",
+  "types": "dist",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mvieracanive/nestjs-doc-manager.git"
+  }
+}
