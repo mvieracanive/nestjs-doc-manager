@@ -1,13 +1,13 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 export class NoFileException extends HttpException {
   constructor() {
     super(
       {
         status: HttpStatus.BAD_REQUEST,
-        error: 'File does not exist',
+        error: "File does not exist",
       },
-      HttpStatus.BAD_REQUEST,
+      HttpStatus.BAD_REQUEST
     );
   }
 }
@@ -17,9 +17,9 @@ export class NoFileExceptionID extends HttpException {
     super(
       {
         status: HttpStatus.BAD_REQUEST,
-        error: 'El archivo no existe. ID: ' + id,
+        error: "El archivo no existe. ID: " + id,
       },
-      HttpStatus.BAD_REQUEST,
+      HttpStatus.BAD_REQUEST
     );
   }
 }

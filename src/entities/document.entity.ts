@@ -4,10 +4,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { MetadataAbstract } from '../metadata-templates/metadata.abstract';
+} from "typeorm";
+import { MetadataAbstract } from "../metadata-templates/metadata.abstract";
 
-@Entity('documents')
+@Entity("documents")
 export class Document {
   @PrimaryGeneratedColumn()
   id: number;
@@ -33,7 +33,7 @@ export class Document {
   @Column({ nullable: true })
   encoding: string;
 
-  @Column('jsonb', { nullable: true })
+  @Column("jsonb", { nullable: true })
   metadata: MetadataAbstract;
 
   @CreateDateColumn()

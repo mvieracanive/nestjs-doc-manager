@@ -1,36 +1,38 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { classToPlain, plainToClass } from 'class-transformer';
-import { getManager, Repository, UpdateDateColumn } from 'typeorm';
-import { CreateDocumentDto } from './dto/create-document.dto';
-import { UpdateDocumentDto } from './dto/update-document.dto';
-import { Document } from './entities/document.entity';
-import { MetadataAbstract } from './metadata-templates/metadata.abstract';
-import { DocumentDto } from './dto/document.dto';
-import { FileDownloadDto } from './dto/file-download.dto';
-import * as fs from 'fs';
-import { DocumentMetadataDto } from './dto/document-metadata.dto';
-import { NoFileException, NoFileExceptionID } from './responses/nofile.exception';
-import { SuccessResponses } from './responses/success.responses';
-import { DatabaseException } from './responses/database.exception';
-import { FileSystemException } from './responses/filesystem.exception';
-import { DocModuleException } from './responses/module.exception';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { classToPlain, plainToClass } from "class-transformer";
+import { getManager, Repository, UpdateDateColumn } from "typeorm";
+import { CreateDocumentDto } from "./dto/create-document.dto";
+import { UpdateDocumentDto } from "./dto/update-document.dto";
+import { Document } from "./entities/document.entity";
+import { MetadataAbstract } from "./metadata-templates/metadata.abstract";
+import { DocumentDto } from "./dto/document.dto";
+import { FileDownloadDto } from "./dto/file-download.dto";
+import * as fs from "fs";
+import { DocumentMetadataDto } from "./dto/document-metadata.dto";
+import {
+  NoFileException,
+  NoFileExceptionID,
+} from "./responses/nofile.exception";
+import { SuccessResponses } from "./responses/success.responses";
+import { DatabaseException } from "./responses/database.exception";
+import { FileSystemException } from "./responses/filesystem.exception";
+import { DocModuleException } from "./responses/module.exception";
 
 @Injectable()
 export class DocumentService {
   constructor(
     @InjectRepository(Document)
-    private _documentRepository: Repository<Document>,
+    private _documentRepository: Repository<Document>
   ) {}
 
   async create(file: any, metadata: MetadataAbstract) {
-    if (typeof file == 'undefined')
-      throw new NoFileException();
+    if (typeof file == "undefined") throw new NoFileException();
 
     const plain = classToPlain(file);
     const createDto = plainToClass(CreateDocumentDto, plain);
 
-    createDto.metadata = metadata; 
+    createDto.metadata = metadata;
 
     const p = this._documentRepository.insert(createDto);
 
@@ -38,7 +40,8 @@ export class DocumentService {
       return await p.then(function (value) {
         console.log(`ENTITY: "${createDto.originalname}" inserted`);
         return SuccessResponses.successDBEntityModification(
-          value.identifiers[0].id);
+          value.identifiers[0].id
+        );
       });
     } catch (exception) {
       console.log(exception);
@@ -51,7 +54,7 @@ export class DocumentService {
       return await this._documentRepository
         .findOne({ id: id })
         .then(function (value) {
-          console.log('Recovered document: ', value.id);
+          console.log("Recovered document: ", value.id);
           const plainr = classToPlain(value);
           const obj = plainToClass(DocumentDto, plainr, {
             excludeExtraneousValues: true,
@@ -63,7 +66,7 @@ export class DocumentService {
       throw new NoFileExceptionID(id);
     }
   }
-  
+
   async downloadFileResponse(id: number) {
     const doc = await this.findOne(id);
     const respDto = new FileDownloadDto();
@@ -85,8 +88,7 @@ export class DocumentService {
 
       console.log(`ENTITY: Document ${updateDocumentDto.id} saved`);
       return SuccessResponses.successDBEntityModification(id);
-    } 
-    catch (exception) {
+    } catch (exception) {
       console.log(exception);
       throw new DatabaseException();
     }
@@ -96,15 +98,13 @@ export class DocumentService {
     let old;
     try {
       old = await this._documentRepository.findOne(id);
-      if (old == undefined)
-        throw new NoFileException();
+      if (old == undefined) throw new NoFileException();
       await this._documentRepository.delete(id);
       fs.unlinkSync(old.path);
       return SuccessResponses.successDBEntityModification(id);
-    } 
-    catch (exception) {
+    } catch (exception) {
       console.log(exception);
-      if (exception.code && exception.code == 'ENOENT')
+      if (exception.code && exception.code == "ENOENT")
         throw new FileSystemException(old.filename);
       throw new DocModuleException();
     }

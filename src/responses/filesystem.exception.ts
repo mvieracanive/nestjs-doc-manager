@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 export class FileSystemException extends HttpException {
   constructor(filename: string) {
@@ -7,7 +7,7 @@ export class FileSystemException extends HttpException {
         status: HttpStatus.BAD_REQUEST,
         error: `File System Error handling file ${filename}, check logs`,
       },
-      HttpStatus.BAD_REQUEST,
+      HttpStatus.BAD_REQUEST
     );
   }
 }

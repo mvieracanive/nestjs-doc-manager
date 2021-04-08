@@ -1,14 +1,14 @@
-import { DynamicModule, Module } from '@nestjs/common';
-import { DocumentService } from './document.service';
-import { ConfigService } from '@nestjs/config';
-import { MulterModule } from '@nestjs/platform-express';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Document } from './entities/document.entity';
-import { OptionsDocModule } from './types/options.class';
-import { ConfigurationKeys } from './types/config.keys.enum';
-import { ConnectionOptions } from 'typeorm';
+import { DynamicModule, Module } from "@nestjs/common";
+import { DocumentService } from "./document.service";
+import { ConfigService } from "@nestjs/config";
+import { MulterModule } from "@nestjs/platform-express";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Document } from "./entities/document.entity";
+import { ConfigurationKeys } from "./types/config.keys.enum";
+import { ConnectionOptions } from "typeorm";
 
-@Module({/*
+@Module({
+  /*
   imports: [
     MulterModule.registerAsync({
       inject: [ConfigService],
@@ -20,7 +20,8 @@ import { ConnectionOptions } from 'typeorm';
   ],
   providers: [DocumentService],
   exports: [DocumentService, MulterModule],
-*/})
+*/
+})
 export class DocumentModule {
   static forRootAsync(config: ConfigService): DynamicModule {
     return {
@@ -29,7 +30,9 @@ export class DocumentModule {
         MulterModule.registerAsync({
           inject: [ConfigService],
           useFactory: async (config: ConfigService) => ({
-            dest:  config.get(ConfigurationKeys.MULTER_DEST) ? config.get(ConfigurationKeys.MULTER_DEST) : 'uploads',
+            dest: config.get(ConfigurationKeys.MULTER_DEST)
+              ? config.get(ConfigurationKeys.MULTER_DEST)
+              : "uploads",
           }),
         }),
         TypeOrmModule.forRootAsync({
@@ -43,19 +46,15 @@ export class DocumentModule {
               username: config.get<string>(ConfigurationKeys.DATABASE_USERNAME),
               password: config.get(ConfigurationKeys.DATABASE_PASSWORD),
               database: config.get(ConfigurationKeys.DATABASE_NAME),
-              entities: [
-                Document,
-              ], //'../modules/**/entities/*.entity{.ts, .js}'],
-              migrations: ['/migrations/*{.ts, .js}'],
+              entities: [Document], //'../modules/**/entities/*.entity{.ts, .js}'],
+              migrations: ["/migrations/*{.ts, .js}"],
               //synchronize: true, //Delete on production
             } as ConnectionOptions;
           },
         }),
         TypeOrmModule.forFeature([Document]),
       ],
-      providers: [
-        DocumentService,
-      ],
+      providers: [DocumentService],
       exports: [DocumentService, MulterModule],
     };
   }

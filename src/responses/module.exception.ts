@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 export class DocModuleException extends HttpException {
   constructor() {
@@ -7,7 +7,7 @@ export class DocModuleException extends HttpException {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         error: `Document Module threw exception, check logs`,
       },
-      HttpStatus.INTERNAL_SERVER_ERROR,
+      HttpStatus.INTERNAL_SERVER_ERROR
     );
   }
 }

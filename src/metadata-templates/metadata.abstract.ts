@@ -2,8 +2,8 @@ import {
   classToPlain,
   plainToClass,
   plainToClassFromExist,
-} from 'class-transformer';
-import { ClassType } from 'class-transformer/ClassTransformer';
+} from "class-transformer";
+import { ClassType } from "class-transformer/ClassTransformer";
 
 export class MetadataAbstract {
   constructor() {
@@ -23,7 +23,7 @@ export class MetadataAbstract {
     }*/
 
   static parse(json: string | unknown, cls: ClassType<unknown>) {
-    if (typeof json == 'object') return json;
+    if (typeof json == "object") return json;
     const obj = JSON.parse(json as string);
     const exist = new cls();
     const plain = classToPlain(obj);
@@ -34,7 +34,7 @@ export class MetadataAbstract {
   static createSQLSelect(cls: ClassType<any>): string {
     const instance = new cls();
     const fields = Object.getOwnPropertyNames(instance);
-    let res = '';
+    let res = "";
     fields.forEach((element) => {
       res += `metadata->'${element}' as "${element}", `;
     });

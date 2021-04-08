@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 export class DatabaseException extends HttpException {
   constructor() {
@@ -6,9 +6,9 @@ export class DatabaseException extends HttpException {
       {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         error:
-          'There has occured an internal database error, please check logs.',
+          "There has occured an internal database error, please check logs.",
       },
-      HttpStatus.INTERNAL_SERVER_ERROR,
+      HttpStatus.INTERNAL_SERVER_ERROR
     );
   }
 }
