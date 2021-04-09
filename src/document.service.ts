@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { classToPlain, plainToClass } from "class-transformer";
 import { getManager, Repository, UpdateDateColumn } from "typeorm";
@@ -18,11 +18,12 @@ import { SuccessResponses } from "./responses/success.responses";
 import { DatabaseException } from "./responses/database.exception";
 import { FileSystemException } from "./responses/filesystem.exception";
 import { DocModuleException } from "./responses/module.exception";
+import { REPOSITORY_DOCUMENT } from "./types/module.options";
 
 @Injectable()
 export class DocumentService {
   constructor(
-    @InjectRepository(Document)
+    @Inject(REPOSITORY_DOCUMENT)
     private _documentRepository: Repository<Document>
   ) {}
 
@@ -108,5 +109,35 @@ export class DocumentService {
         throw new FileSystemException(old.filename);
       throw new DocModuleException();
     }
+  }
+
+  //@Res({ passthrough: true }) This decorator allows to leave in controller the rest to Nest middleware
+  /*
+  AT CONTROLLER
+  async download(
+    @Param('id') id: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    this._serviceDocument.generateResDownloadForController(id, res);
+  }
+  */
+  async generateResDownloadForController(id: number, res){
+    const file: FileDownloadDto = await this.downloadFileResponse(
+      id,
+    );
+    res.status(HttpStatus.OK);
+    res.attachment(file.filename);
+    res.write(file.file);
+    return res;
+
+    /*res.download(file.path, file.filename, function (err) {
+      if (err) {
+        //throw new FileException();
+        console.log(err);
+      }
+      else {
+        console.log('successs');;
+      }
+    });*/
   }
 }

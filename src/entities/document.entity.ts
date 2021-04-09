@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 import { MetadataAbstract } from "../metadata-templates/metadata.abstract";
 
-@Entity("documents")
+@Entity("doc_manager_mvc")
 export class Document {
   @PrimaryGeneratedColumn()
   id: number;

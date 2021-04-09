@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { classToPlain, plainToClass } from "class-transformer";
 import { Repository } from "typeorm";
@@ -7,11 +7,12 @@ import { DocumentDto } from "./dto/document.dto";
 import { MetadataAbstract } from "./metadata-templates/metadata.abstract";
 import { Document } from "./entities/document.entity";
 import { NoFileExceptionID } from "./responses/nofile.exception";
+import { REPOSITORY_DOCUMENT } from "./types/module.options";
 
 @Injectable()
 export class DocumentFinderService {
   constructor(
-    @InjectRepository(Document)
+    @Inject(REPOSITORY_DOCUMENT)
     private _documentRepository: Repository<Document>
   ) {}
 

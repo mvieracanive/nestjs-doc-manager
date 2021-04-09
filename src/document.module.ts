@@ -1,61 +1,72 @@
 import { DynamicModule, Module } from "@nestjs/common";
 import { DocumentService } from "./document.service";
-import { ConfigService } from "@nestjs/config";
 import { MulterModule } from "@nestjs/platform-express";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { Document } from "./entities/document.entity";
-import { ConfigurationKeys } from "./types/config.keys.enum";
-import { ConnectionOptions } from "typeorm";
+import { ConnectionOptions, createConnection } from "typeorm";
+import { DocumentFinderService } from "./document-finder.service";
+import { DocModuleOptionsFactory, REPOSITORY_DOCUMENT, DocModuleAsyncOptions, CONNECTION_NAME, MULTER_DEST_PROVIDER } from "./types/module.options";
+import { MulterOptions } from "@nestjs/platform-express/multer/interfaces/multer-options.interface";
 
-@Module({
-  /*
-  imports: [
-    MulterModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: async (_config: ConfigService) => ({
-        dest: 'uploads'//_config.get(ConfigurationKeys.MULTER_DEST),
-      }),
-    }),
-    TypeOrmModule.forFeature([Document]),
-  ],
-  providers: [DocumentService],
-  exports: [DocumentService, MulterModule],
-*/
-})
-export class DocumentModule {
-  static forRootAsync(config: ConfigService): DynamicModule {
+@Module({})
+export class UtilityModule {
+  static forRootAsync(options: DocModuleOptionsFactory): DynamicModule {
     return {
-      module: DocumentModule,
-      imports: [
-        MulterModule.registerAsync({
-          inject: [ConfigService],
-          useFactory: async (config: ConfigService) => ({
-            dest: config.get(ConfigurationKeys.MULTER_DEST)
-              ? config.get(ConfigurationKeys.MULTER_DEST)
-              : "uploads",
-          }),
-        }),
-        TypeOrmModule.forRootAsync({
-          inject: [ConfigService],
-          async useFactory(config: ConfigService) {
-            return {
-              //ssl: true,
-              //name: 'defaults', Should be added with a name when more than one connection.
-              type: config.get<string>(ConfigurationKeys.DATABASE_TYPE),
-              host: config.get<string>(ConfigurationKeys.DATABASE_HOST),
-              username: config.get<string>(ConfigurationKeys.DATABASE_USERNAME),
-              password: config.get(ConfigurationKeys.DATABASE_PASSWORD),
-              database: config.get(ConfigurationKeys.DATABASE_NAME),
-              entities: [Document], //'../modules/**/entities/*.entity{.ts, .js}'],
-              migrations: ["/migrations/*{.ts, .js}"],
-              //synchronize: true, //Delete on production
-            } as ConnectionOptions;
-          },
-        }),
-        TypeOrmModule.forFeature([Document]),
-      ],
-      providers: [DocumentService],
-      exports: [DocumentService, MulterModule],
+      module: UtilityModule,        
+      providers: [
+              {
+                provide: DocModuleAsyncOptions,
+                useFactory: async (a) =>
+                    await options.useFactory(a),
+                inject: [options.inject],
+              }
+            ],      
+      exports: [DocModuleAsyncOptions],
     };
+  }
+}
+
+@Module({})
+export class DocumentModule {
+
+    static forRootAsync(options: DocModuleOptionsFactory): DynamicModule {
+      return {
+        module: DocumentModule,        
+        providers: [
+                {
+                  provide: REPOSITORY_DOCUMENT,
+                  useFactory: async (config: DocModuleAsyncOptions) => 
+                    await DocumentModule.createDocumentRepository(config),
+                  inject: [ DocModuleAsyncOptions ],
+                },
+                {
+                  provide: DocModuleAsyncOptions,
+                  useFactory: async (a) =>
+                      await options.useFactory(a),
+                  inject: [options.inject],
+                },                
+                DocumentService
+              ],
+        imports: [        
+              MulterModule.registerAsync({
+                imports: [UtilityModule.forRootAsync(options)],
+                inject: [DocModuleAsyncOptions],
+                useFactory: async (configService: DocModuleAsyncOptions) => (
+                  {dest: configService.multerdest ? configService.multerdest : 'uploads'} as MulterOptions),                
+              })
+            ],
+        exports: [DocumentService, DocumentFinderService],
+      };
+    }
+
+  static async createDocumentRepository (config: DocModuleAsyncOptions){
+    delete config.multerdest;
+    const connection = await createConnection({
+      name: CONNECTION_NAME,
+      synchronize: true,
+      entities: [Document],
+      ...config
+    } as ConnectionOptions);
+
+    return connection.getRepository(Document);
   }
 }

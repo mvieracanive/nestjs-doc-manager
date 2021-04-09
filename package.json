@@ -1,6 +1,6 @@
 {
   "name": "@mvieracanive/nest_doc_manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A module for Nest.js for managing documents under the principle of file-system information of archive and its medatadata.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
