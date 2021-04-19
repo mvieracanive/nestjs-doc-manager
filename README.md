@@ -113,7 +113,7 @@ Where parameter “file” is file object uploaded by Multer and metadata is an 
 
 ### Updating a file
 
-For updating a file, it is necessary the id and an metadata object with data updated.
+For updating a file, it is necessary the id and an metadata object with data to be updated.
 
 ```
 _documentService: DocumentService;
@@ -222,4 +222,4 @@ Every finder should return an array of _DocumentMetadataDto_
 
 ## License
 
-Nest Notifier is [MIT licensed](LICENSE).
+Nest Doc manager is [MIT licensed](LICENSE).
