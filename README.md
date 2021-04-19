@@ -95,7 +95,7 @@ export class ContractMetadata extends MetadataAbstract {
 }
 ```
 
-It is assumed a contract would have a date as of the contract is in force and a date as of contract is not valid any more. In addition this template is going to define a type.
+It is assumed a contract would have a date as of the contract is in force and a date as of contract is not valid anymore. In addition this template is going to define a type.
 
 IMPORTANT: it is very important to initialize every attribute of the class.
 
