@@ -111,7 +111,8 @@ _documentService.create(file, metadata);
 
 Where parameter “file” is file object uploaded by Multer and metadata is an object of any template, in this case _ContracMetadata_.
 
-###Updating a file
+### Updating a file
+
 For updating a file, it is necessary the id and an metadata object with data updated.
 
 ```
@@ -120,7 +121,8 @@ _documentService: DocumentService;
 _documentService.update(id, metadata);
 ```
 
-###Removing a file
+### Removing a file
+
 For removing a file, it is necessary only the id.
 
 ```
@@ -129,7 +131,8 @@ _documentService: DocumentService;
 _documentService.remove(id);
 ```
 
-###Downloading a file
+### Downloading a file
+
 For downloading a file, it is necessary only the id.
 
 ```
@@ -158,7 +161,8 @@ _documentService.generateResDownloadForController(id: number, res);
 
 _generateResDownloadForController_ returns the response object _res_ edited, ready to be sent back to client for downloading file whose id is sent as parameter.
 
-###Finding one file by id
+### Finding one file by id
+
 For finding file-system data by file’s id you can use function _finOne()_
 
 ```
@@ -201,7 +205,8 @@ export class DocumentMetadataDto {
 }
 ```
 
-###Finders
+### Finders
+
 Until now we have seen how to handle basic operations of files, but what about more complicated queries. Well, for that, finders are designed in this module. There is a service called _DocumentFinderService_, this service should offer the methods needed to find files based on their metadata. For example, let’s see the following example.
 
 Consider we would like to find all files in database of type “contract”, for this, we could use the finder _findEquals()_.
