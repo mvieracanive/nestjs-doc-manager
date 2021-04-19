@@ -1,6 +1,5 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { CreateDocumentDto } from "./create-document.dto";
 import { FileUploadDto } from "./file-upload.dto";
 
 export class DocumentDto extends PartialType(FileUploadDto) {

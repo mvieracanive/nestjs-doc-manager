@@ -1,6 +1,6 @@
 {
   "name": "@mvieracanive/nest_doc_manager",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A module for Nest.js for managing documents under the principle of file-system information of archive and its medatadata.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -8,7 +8,7 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "prepare": "npm run build",
-    "prepublishOnly": "npm run lint",
+    "prepublishOnly": "npm run format && npm run lint",
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"

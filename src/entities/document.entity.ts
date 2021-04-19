@@ -1,3 +1,4 @@
+import { DB_TABLE_NAME } from "../types/module.options";
 import {
   Column,
   CreateDateColumn,
@@ -7,7 +8,7 @@ import {
 } from "typeorm";
 import { MetadataAbstract } from "../metadata-templates/metadata.abstract";
 
-@Entity("doc_manager_mvc")
+@Entity(DB_TABLE_NAME)
 export class Document {
   @PrimaryGeneratedColumn()
   id: number;

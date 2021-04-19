@@ -1,7 +1,6 @@
-import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
+import { HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { classToPlain, plainToClass } from "class-transformer";
-import { getManager, Repository, UpdateDateColumn } from "typeorm";
+import { Repository } from "typeorm";
 import { CreateDocumentDto } from "./dto/create-document.dto";
 import { UpdateDocumentDto } from "./dto/update-document.dto";
 import { Document } from "./entities/document.entity";
@@ -68,6 +67,24 @@ export class DocumentService {
     }
   }
 
+  async findOneMetadata(id: number): Promise<DocumentMetadataDto> {
+    try {
+      return await this._documentRepository
+        .findOne({ id: id })
+        .then(function (value) {
+          console.log("Recovered document: ", value.id);
+          const plainr = classToPlain(value);
+          const obj = plainToClass(DocumentMetadataDto, plainr, {
+            excludeExtraneousValues: true,
+          });
+          return obj;
+        });
+    } catch (exception) {
+      console.log(exception);
+      throw new NoFileExceptionID(id);
+    }
+  }
+
   async downloadFileResponse(id: number) {
     const doc = await this.findOne(id);
     const respDto = new FileDownloadDto();
@@ -121,10 +138,8 @@ export class DocumentService {
     this._serviceDocument.generateResDownloadForController(id, res);
   }
   */
-  async generateResDownloadForController(id: number, res){
-    const file: FileDownloadDto = await this.downloadFileResponse(
-      id,
-    );
+  async generateResDownloadForController(id: number, res) {
+    const file: FileDownloadDto = await this.downloadFileResponse(id);
     res.status(HttpStatus.OK);
     res.attachment(file.filename);
     res.write(file.file);
